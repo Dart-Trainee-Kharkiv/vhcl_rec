@@ -1,8 +1,8 @@
 import cv2
 import numpy as np
 
-# Load YOLO
-net = cv2.dnn.readNet("yolov3-tiny_last (1).weights", "yolov3-tiny_last_cfg.cfg")
+# load YOLO pretrained weights and config file
+net = cv2.dnn.readNet("yolov3-tiny.weights", "yolov3-tiny.cfg")
 classes = []
 
 with open("obj.names", "r") as f:
@@ -11,38 +11,22 @@ with open("obj.names", "r") as f:
 layer_names = net.getLayerNames()
 outputlayers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
 
-
 colors = np.random.uniform(0, 255, size=(len(classes), 3))
 
 
-# loading image
+# load image from webcam
 cap = cv2.VideoCapture(0)
+# load image from rtsp stream
 #cap = cv2.VideoCapture("rtsp://cam:jhg23dfc@178.150.141.135:1555/Streaming/Channels/101")
+
 while True:
-
     flag, frame = cap.read()
-    #cv2.imshow("Fraame", frame)
-    #frame = cv2.imread(frame)
-    #frame = cv2.resize(frame, None, fx=0.4, fy=0.3)
+
     height, width, channels = frame.shape
-
-#img = cv2.imread(r"C:\Users\r.pedan\ComputerVison\cats.jpg")
-#img = cv2.resize(img, None, fx=0.4, fy=0.3)
-#height, width, channels = img.shape
-
 # detecting objects
     blob = cv2.dnn.blobFromImage(frame, 0.00392, (416, 416), (0, 0, 0), True, crop=False)
-
-
-
-# for b in blob:
-#     for n,img_blob in enumerate(b):
-#         cv2.imshow(str(n),img_blob)
-
     net.setInput(blob)
     outs = net.forward(outputlayers)
-# print(outs[1])
-
 
 # Showing info on screen/ get confidence score of algorithm in detecting an object in blob
     class_ids = []
@@ -84,4 +68,3 @@ while True:
 
     cv2.imshow("Frame", frame)
     cv2.waitKey(1)
-    #cv2.destroyAllWindows()
