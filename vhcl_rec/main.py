@@ -1,7 +1,10 @@
 from classes import *
 
-yolov3_tiny = YoloDetection(1)
+yolov3_tiny = YoloDetection(2)
+
+video = cv2.VideoCapture(yolov3_tiny.get_source)
 
 while True:
-    yolov3_tiny.yoloDetection()
+    flag, frame = video.read()
+    yolov3_tiny.yolo_detection(frame)
    # yolov3_tiny.input()
